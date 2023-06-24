@@ -2,6 +2,7 @@
 
 **TABLE of CONTENTS**
 
+- [About](#about)
 - [General Kernel and Kext handling by OpenCore](#general-kernel-and-kext-handling-by-opencore)
 - [Lilu and VirtualSMC first?](#lilu-and-virtualsmc-first)
 - [Kernel Support Table](#kernel-support-table)
@@ -10,8 +11,8 @@
 	- [Example 2: ApplePS2SmartTouchPad + Plugins (Laptop)](#example-2-appleps2smarttouchpad--plugins-laptop)
 	- [Example 3: VoodooPS2 + TrackPad (Laptop)](#example-3-voodoops2--trackpad-laptop)
 	- [Example 4: VoodooPS2 + I2C (Laptop)](#example-4-voodoops2--i2c-laptop)
-	- [Example 5: VoodooPS2 + VoodooRMI (Laptop)](#example-5-voodoops2--voodoormi-laptop)
-	- [Example 6: VoodooPS2 + VoodooRMI + I2C (Laptop)](#example-6-voodoops2--voodoormi--i2c-laptop)
+	- [Example 5: VoodooPS2 + VoodooRMI + VoodooSMBus (Laptop)](#example-5-voodoops2--voodoormi--voodoosmbus-laptop)
+	- [Example 6: VoodooPS2 + VoodooRMI + VoodooI2C (Laptop)](#example-6-voodoops2--voodoormi--voodooi2c-laptop)
 	- [Example 7: Broadcom WiFi and Bluetooth](#example-7-broadcom-wifi-and-bluetooth)
 		- [:bulb: Fixing issues with AirportBrcmFixup generating a lot of crash reports](#bulb-fixing-issues-with-airportbrcmfixup-generating-a-lot-of-crash-reports)
 	- [Example 8: Intel WiFi and Bluetooth](#example-8-intel-wifi-and-bluetooth)
@@ -19,6 +20,7 @@
 	- [Example 9b: Possible Laptop Kext Sequence](#example-9b-possible-laptop-kext-sequence)
 - [Notes](#notes)
 
+## About
 
 This Chapter contains a collection of `config.plist` examples to demonstrate the loading sequences for certain kexts and family of kexts. 
 
@@ -94,12 +96,23 @@ Any additional kexts must be placed after the mandatory kexts.
 ![config3](https://user-images.githubusercontent.com/76865553/140813775-eb6ff60f-9ec3-4c9b-a768-f5e5a9e6868e.png)
 ### Example 4: VoodooPS2 + I2C (Laptop)
 ![config4](https://user-images.githubusercontent.com/76865553/140813798-a403f299-e85d-4fed-90f7-bea045384db5.png)
-### Example 5: VoodooPS2 + VoodooRMI (Laptop)
-![Config 5](https://user-images.githubusercontent.com/76865553/140813835-d9cd3e9c-ee55-43f1-b33f-2ae292b53b17.png)
-### Example 6: VoodooPS2 + VoodooRMI + I2C (Laptop)
-![Config6](https://user-images.githubusercontent.com/76865553/140813861-4ffce7a5-d636-4bec-a496-cefe85b2a9a0.png)
+### Example 5: VoodooPS2 + VoodooRMI + VoodooSMBus (Laptop)
+For Synaptics TrackPads which are controlled via SMBus, the kext order is:
+
+![Voodoo_RMI_SMBUS](https://github.com/5T33Z0/OC-Little-Translated/assets/76865553/5bcb3370-2094-4c91-b813-c9eab5cd2901)
+
+**SOURCE**: [**VoodooSMBus**](https://github.com/VoodooSMBus/VoodooRMI#installation)
+
+### Example 6: VoodooPS2 + VoodooRMI + VoodooI2C (Laptop)
+For Synaptics TrackPads which are controlled via I2C, the kext order is:
+
+![Voodoo_RMI_I2C](https://github.com/5T33Z0/OC-Little-Translated/assets/76865553/d7010ea1-89f3-4a10-b9ab-acb920bd180b)
+
+**SOURCE**: [**VoodooSMBus**](https://github.com/VoodooSMBus/VoodooRMI#installation)
+
 ### Example 7: Broadcom WiFi and Bluetooth 
-![Brcmkexts](https://user-images.githubusercontent.com/76865553/161415791-dbe0356d-a5d5-4bb5-9cad-98efbbaf782a.png)
+
+![BRCM_WIFI_BT](https://github.com/5T33Z0/OC-Little-Translated/assets/76865553/872fc20c-9bf5-4fa9-95ad-02d36f0f69b2)
 
 When using Broadcom WiFi/Bluetooth cards that are not natively supported by macOS, you have to be aware about the following:
 
@@ -114,6 +127,7 @@ When using Broadcom WiFi/Bluetooth cards that are not natively supported by macO
 	- `BrcmPatchRAM.kext`: For 10.10 or earlier
 	- `BrcmPatchRAM2.kext`: For macOS 10.11 to 10.14
 	- `BrcmPatchRAM3.kext`: For macOS 10.15 to 11.x. Needs to be combined with `BrcmBluetoothInjector.kext` in order to work.
+5. With the release of macOS Sonoma Developer Preview (Darwin Kernel 23.0), Apple completely dropped support for Broadcom Cards!  
 
 > **Warning**: Don't add `BrcmFirmwareRepo.kext` to `EFI/OC/Kexts`! It cannot be injected via Boot Managers. It needs to be installed in `/System/Library/Extensions` (/Library/Extensions on 10.11 and later). In this case, `BrcmFirmwareData.kext`is not required.  You can use [**Kext-Droplet**](https://github.com/chris1111/Kext-Droplet-macOS) to install kext on the system directly.
 
